@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - EC-ASP.NET</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/InlämningASP.NET.styles.css" asp-append-version="true" />
+</head>
+<body>
+	<div class="portal">
+		<div class="logotype">
+			@await Html.PartialAsync("Partials/Components/_AlphaLogo")
+		</div>
+		<div class="side">
+			
+		</div>
+		<div class="top">
+
+			<div class="settings-container">
+				<button class="settings">
+					<img src="/images/Settings.svg" alt="">
+				</button>
+			</div>
+
+			<div class="profile-container">
+				<button class="profile-circle">
+					<img src="/images/ProfileAvatar.svg" alt="Profile Picture">
+				</button>
+			</div>
+		</div>
+		<div class="main">
+			<section class="project-overview">
+				<h2>Projects</h2>
+				<button class="btn btn-blue">
+					<i class="fa-solid fa-plus"></i>
+					<span>Add</span>
+					<span>Project</span>
+				</button>
+			</section>
+
+			<div class="project-container">
+				<div class="project-status-links">
+					<a class="project-status-link">
+						<span class="project-status-category">ALL</span>
+						<span class="project-count">[0]</span>
+					</a>
+					<a class="project-status-link">
+						<span class="project-status-category">STARTED</span>
+						<span class="project-count">[0]</span>
+					</a>
+					<a class="project-status-link">
+						<span class="project-status-category">COMPLETED</span>
+						<span class="project-count">[0]</span>
+					</a>
+				</div>
+			</div>
+
+			
+		</div>
+
+
+	</div>
+
+
+    @RenderBody()
+
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

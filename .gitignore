@@ -1,0 +1,37 @@
+# User-specific files
+.vs/
+.vscode/
+.idea/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows Installer Log files
+*.cab
+*.log
+
+# User-specific files (Windows)
+Thumbs.db
+ehthumbs.db
+
+# ASP.NET temporary files
+# Windows
+# Windows 7/8/10
+bin/
+obj/
+packages/
+
+# ASP.NET Settings (user-specific)
+web.config.user
+appsettings.json.user
+
+# Rider IDE settings
+.idea/
+
+# ReSharper
+_ReSharper*/
+*.[Rr]eSharper*/
+
