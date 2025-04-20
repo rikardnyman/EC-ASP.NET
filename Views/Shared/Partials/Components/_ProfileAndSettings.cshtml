@@ -1,0 +1,81 @@
+﻿<div class="settings-container">
+	<button class="settings-btn" id="settings-btn">
+		<img src="~/images/Settings.svg" alt="">
+	</button>
+</div>
+
+
+
+<div class="profile-container">
+	<button class="profile-circle">
+		<img src="~/images/ProfileAvatar.svg" alt="Profile Picture">
+	</button>
+</div>
+
+@await Html.PartialAsync("Partials/Components/_SettingsPopUpMenu")
+@await Html.PartialAsync("Partials/Components/_ProfilePopUpMenu")
+
+
+<script>
+
+    
+    const settingsButton = document.querySelector('.settings-btn');
+    const settingsPopup = document.querySelector('.settings-pop-up-menu');
+
+   
+    const profileButton = document.querySelector('.profile-circle');
+    const profilePopup = document.querySelector('.profile-pop-up-menu');
+
+   
+    function closeProfilePopup() {
+        profilePopup.style.display = 'none';
+    }
+
+   
+    function closeSettingsPopup() {
+        settingsPopup.style.display = 'none';
+    }
+
+   
+    settingsButton.addEventListener('click', (event) => {
+        event.stopPropagation(); 
+        
+        closeProfilePopup();
+
+        
+        if (settingsPopup.style.display === 'none' || settingsPopup.style.display === '') {
+            settingsPopup.style.display = 'flex';
+        } else {
+            settingsPopup.style.display = 'none';
+        }
+    });
+
+   
+    profileButton.addEventListener('click', (event) => {
+        event.stopPropagation(); t
+        
+        closeSettingsPopup();
+
+        
+        if (profilePopup.style.display === 'none' || profilePopup.style.display === '') {
+            profilePopup.style.display = 'flex';
+        } else {
+            profilePopup.style.display = 'none';
+        }
+    });
+
+    
+    document.addEventListener('click', (event) => {
+        
+        if (!settingsButton.contains(event.target) && !settingsPopup.contains(event.target)) {
+            settingsPopup.style.display = 'none';
+        }
+
+       
+        if (!profileButton.contains(event.target) && !profilePopup.contains(event.target)) {
+            profilePopup.style.display = 'none';
+        }
+    });
+
+
+</script>

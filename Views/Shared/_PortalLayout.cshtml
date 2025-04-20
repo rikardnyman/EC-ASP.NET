@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/InlämningASP.NET.styles.css" asp-append-version="true" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+	
 </head>
 <body>
 	<div class="portal">
@@ -15,57 +17,20 @@
 			@await Html.PartialAsync("Partials/Components/_AlphaLogo")
 		</div>
 		<div class="side">
-			
+			@await Html.PartialAsync("Partials/Components/_Navlinks")
 		</div>
 		<div class="top">
-
-			<div class="settings-container">
-				<button class="settings">
-					<img src="/images/Settings.svg" alt="">
-				</button>
-			</div>
-
-			<div class="profile-container">
-				<button class="profile-circle">
-					<img src="/images/ProfileAvatar.svg" alt="Profile Picture">
-				</button>
-			</div>
+						@await Html.PartialAsync("Partials/Components/_ProfileAndSettings")
 		</div>
+
 		<div class="main">
-			<section class="project-overview">
-				<h2>Projects</h2>
-				<button class="btn btn-blue">
-					<i class="fa-solid fa-plus"></i>
-					<span>Add</span>
-					<span>Project</span>
-				</button>
-			</section>
-
-			<div class="project-container">
-				<div class="project-status-links">
-					<a class="project-status-link">
-						<span class="project-status-category">ALL</span>
-						<span class="project-count">[0]</span>
-					</a>
-					<a class="project-status-link">
-						<span class="project-status-category">STARTED</span>
-						<span class="project-count">[0]</span>
-					</a>
-					<a class="project-status-link">
-						<span class="project-status-category">COMPLETED</span>
-						<span class="project-count">[0]</span>
-					</a>
-				</div>
-			</div>
-
+		
 			
+			@RenderBody()
 		</div>
-
-
 	</div>
 
 
-    @RenderBody()
 
 
 

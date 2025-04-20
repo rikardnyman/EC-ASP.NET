@@ -1,0 +1,21 @@
+﻿<nav class="project-status-links">
+    <a class="project-status-link @(Context.Request.Path.Equals("/projects/all") ? "active" : "")" asp-action="AllProjects" asp-controller="Projects">
+        <span>All</span>
+    </a>
+    <a class="project-status-link @(Context.Request.Path.Equals("/projects/started")  ? "active" : "")" asp-action="StartedProjects" asp-controller="Projects">
+        <span>Started</span>
+    </a>
+    <a class="project-status-link @(Context.Request.Path.Equals("/projects/completed")  ? "active" : "")" asp-action="CompletedProjects" asp-controller="Projects">
+        <span>Completed</span>
+    </a>
+</nav>
+
+<script>
+	
+	document.querySelectorAll('.project-status-link').forEach(link => {
+		link.addEventListener('click', function() {
+			document.querySelectorAll('.project-status-link').forEach(l => l.classList.remove('active'));
+			this.classList.add('active');
+		});
+	});
+</script>
