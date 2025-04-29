@@ -6,4 +6,220 @@
 @await Html.PartialAsync("Partials/Components/_ProjectOverview")
 
 
-<div>Alla Projects</div>
+
+<div id="projects" class="page">
+	<section class="project-list">
+		<div class="card">
+			<div class="card-header">
+				<div class="project-menu">
+					<div class="project-menu-header">
+						<div class="project-image">
+							<img src="~/images/ProjectLogo.svg" alt="Template Project" />
+						</div>
+						<div class="project-info">
+							<h6 class="project-display">Rikard Nyman</h6>
+							<span class="client-display">Google, Inc</span>
+						</div>
+
+						
+						<button type="button" class="settings-project-button" data-popup="popup-1"></button>
+						<div class="edit-pop-up-menu popup-1">
+							<div class="pop-up-menu-links">
+								<div class="pop-up-menu-section">
+									<button class="dropdown-btn edit-project-btn">
+										<i class="fa-solid fa-pen-to-square"></i>
+										<span>Edit</span>
+									</button>
+								</div>
+								<div class="pop-up-menu-section">
+									<button class="dropdown-btn delete-project-btn">
+										<i class="fa-solid fa-trash"></i>
+										<span>Delete</span>
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card-body">
+				<p>It is necessary to develop a website redesign in a corporate style.</p>
+			</div>
+			<div class="card-footer"></div>
+		</div>
+
+		
+		<div class="card">
+			<div class="card-header">
+				<div class="project-menu">
+					<div class="project-menu-header">
+						<div class="project-image">
+							<img src="~/images/ProjectLogo.svg" alt="Template Project" />
+						</div>
+						<div class="project-info">
+							<h6 class="project-display">Rikard Nyman</h6>
+							<span class="client-display">Google, Inc</span>
+						</div>
+
+					
+						<button type="button" class="settings-project-button" data-popup="popup-2"></button>
+						<div class="edit-pop-up-menu popup-2">
+							<div class="pop-up-menu-links">
+								<div class="pop-up-menu-section">
+									<button class="dropdown-btn edit-project-btn">
+										<i class="fa-solid fa-pen-to-square"></i>
+										<span>Edit</span>
+									</button>
+								</div>
+								<div class="pop-up-menu-section">
+									<button class="dropdown-btn delete-project-btn">
+										<i class="fa-solid fa-trash"></i>
+										<span>Delete</span>
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card-body">
+				<p>It is necessary to develop a website redesign in a corporate style.</p>
+			</div>
+			<div class="card-footer"></div>
+		</div>
+
+	</section>
+</div>
+
+
+
+
+
+
+
+
+
+<script>
+
+
+
+	
+	// const editButton = document.getElementById('edit-project-btn');
+	// const editModal = document.getElementById('edit-project-modal');
+
+
+	// 		editButton.addEventListener('click', (event) => {
+	// 	event.stopPropagation();
+	// 	editModal.classList.add('modal-show');
+	// });
+
+
+				
+	// 	const closeEditModalButton = document.getElementById('close-edit-modal-btn');
+
+	// 	closeEditModalButton.addEventListener('click', () => {
+	// 	editModal.classList.remove("modal-show");
+	// });
+
+
+
+
+	// window.addEventListener('click', (event) => {
+	// 	if (event.target === editModal) {
+	// 		editModal.classList.remove('modal-show');
+	// 	}
+	// });
+
+
+	// 	const settingsButtons = document.querySelectorAll('.settings-project-button');
+
+	// settingsButtons.forEach(button => {
+	// 	const popupId = button.getAttribute('data-popup');
+	// 	const editPopup = document.getElementById(popupId);
+
+	// 	button.addEventListener('click', (event) => {
+	// 		event.stopPropagation();
+
+
+	// 		if (editPopup.style.display === 'none' || editPopup.style.display === '') {
+	// 			editPopup.style.display = 'flex';
+	// 		} else {
+	// 			editPopup.style.display = 'none';
+	// 		}
+	// 	});
+
+
+	// 	document.addEventListener('click', (event) => {
+	// 		if (!button.contains(event.target) && !editPopup.contains(event.target)) {
+	// 			editPopup.style.display = 'none';
+	// 		}
+	// 	});
+
+
+	// });
+
+
+
+
+
+
+
+
+		// Hämta alla knappar som öppnar popup
+	const settingsButtons = document.querySelectorAll('.settings-project-button');
+
+	settingsButtons.forEach(button => {
+		// Få popup-id från data-popup attributet
+		const popupClass = button.getAttribute('data-popup');
+		const editPopup = document.querySelector(`.${popupClass}`);
+
+		button.addEventListener('click', (event) => {
+			event.stopPropagation(); // Förhindra att klicket bubbla upp till dokumentet
+
+			// Visa eller dölj popup beroende på om den är synlig
+			if (editPopup.style.display === 'none' || editPopup.style.display === '') {
+				editPopup.style.display = 'flex';
+			} else {
+				editPopup.style.display = 'none';
+			}
+		});
+
+		// Lägg till en global eventlyssnare för att stänga popupen när användaren klickar utanför
+		document.addEventListener('click', (event) => {
+			if (!button.contains(event.target) && !editPopup.contains(event.target)) {
+				editPopup.style.display = 'none';
+			}
+		});
+	});
+
+	// Hämta alla knappar för att öppna "Edit Project"-modalen
+	const editButtons = document.querySelectorAll('.edit-project-btn');
+
+	editButtons.forEach(button => {
+		button.addEventListener('click', (event) => {
+			const editModal = document.getElementById('edit-project-modal');
+			event.stopPropagation();
+			editModal.classList.add('modal-show');
+		});
+	});
+
+	// Stäng "Edit Project"-modalen när användaren klickar på stängknappen
+	const closeEditModalButton = document.getElementById('close-edit-modal-btn');
+	closeEditModalButton.addEventListener('click', () => {
+		const editModal = document.getElementById('edit-project-modal');
+		editModal.classList.remove('modal-show');
+	});
+
+	// Stäng modalen om användaren klickar utanför
+	window.addEventListener('click', (event) => {
+		const editModal = document.getElementById('edit-project-modal');
+		if (event.target === editModal) {
+			editModal.classList.remove('modal-show');
+		}
+	});
+
+
+
+
+
+</script>

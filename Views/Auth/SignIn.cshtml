@@ -1,0 +1,49 @@
+﻿@{
+	Layout = "_CleanLayout";
+	ViewData["Title"] = "Sign In";
+}
+
+
+
+<h1>Login</h1>
+
+
+<form method="post" asp-controller="Auth" asp-action="/auth/signup">
+
+	<div class="form-group">
+		<label for="email">Email</label>
+		<input placeholder="Your email address"
+			   type="email"
+			   class="form-control"
+			   id="email"
+			   name="email"
+			   required />
+	</div>
+
+	<div class="form-group">
+		<label for="password">Password</label>
+		<input placeholder="Enter your password"
+			   type="password"
+			   class="form-control"
+			   id="password"
+			   name="password"
+			   required />
+	</div>
+
+	<div class="form-group">
+		<label for="terms">
+			<input type="checkbox" id="remember" name="remember" required />
+			<span class="custom-checkbox"></span>
+			<span>Remember Me</span>
+		</label>
+
+	</div>
+
+	<button type="submit" id="sign-up-btn" class="btn btn-blue">Create Account</button>
+
+</form>
+
+<div class="login-link">
+	<p>Don't' have an account? <a href="/auth/signup">Sign Up</a></p>
+</div>
+

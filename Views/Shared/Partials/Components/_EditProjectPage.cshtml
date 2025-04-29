@@ -1,0 +1,252 @@
+﻿<section id="edit-project-modal" class=" modal">
+	<div class="card">
+
+		<div class="card-header">
+			<h3>Edit Project</h3>
+			<button data-type="close" class="btn-close" id="close-edit-modal-btn" data-target="#edit-project-modal">
+				<i class="fa-solid fa-xmark"></i>
+			</button>
+		</div>
+		<div class="card-body">
+			<form asp-controller="" asp-action="" method="post" enctype="multipart/form-data" novalidate>
+				<div class="form-group">
+					<div id="edit-upload-trigger" class="image-preview-container">
+						<img id="edit-image-preview-project" src="#" class="hide" />
+						<div id="edit-circle" class="circle">
+							<i id="edit-image-preview-icon" class="fa-duotone fa-solid fa-camera"></i>
+						</div>
+					</div>
+					<input type="file" id="edit-image-upload" accept="image/*" class="hide" />
+
+				</div>
+
+
+				<div class="form-group">
+					<label for="projectName" class="form-label">Project Name</label>
+					<input type="text" class="form-control" id="projectName" placeholder="Project Name" />
+				</div>
+
+				<div class="form-group">
+					<label class="form-label">Client</label>
+					<div class="form-select" data-placeholder="Choose a client" id="edit-form-select">
+						<button type="button" class="form-select-trigger" id="edit-client-btn">
+							<span id="edit-form-select-text" class="form-select-text">Choose a client</span>
+						</button>
+						<ul class="form-select-options" id="edit-client-list">
+							<li class="form-select-option" data-value="1">Client 1</li>
+							<li class="form-select-option" data-value="2">Client 2</li>
+						</ul>
+						<input type="hidden" name="form-select-value" id="selected-client" />
+					</div>
+
+				</div>
+
+
+				<div class="form-group">
+					<label class="form-label">Description</label>
+					<textarea class="hide" id="edit-project-description" rows="4"></textarea>
+					<div class="quill-container">
+						<div id="edit-project-description-wysiwyg-editor" class="wysiwyg-editor"></div>
+						<div id="edit-project-description-wysiwyg-toolbar" class="wysiwyg-toolbar">
+
+							<span class="ql-formats">
+								<button class="ql-bold"></button>
+								<button class="ql-italic"></button>
+								<button class="ql-underline"></button>
+							</span>
+							<span class="ql-formats">
+								<button class="ql-align" value=""></button>
+								<button class="ql-align" value="center"></button>
+								<button class="ql-align" value="right"></button>
+							</span>
+							<span class="ql-formats">
+								<button class="ql-list" value="bullet"></button>
+								<button class="ql-list" value="ordered"></button>
+							</span>
+							<span class="ql-formats">
+								<button class="ql-link"></button>
+							</span>
+
+						</div>
+					</div>
+				</div>
+
+
+
+
+				<div class="form-group">
+					<section class="date-column">
+						<label for="startDate" class="form-label">Start Date</label>
+						<div class="startDateContainer">
+							<input type="date" id="startDate" class="hidden-date-input" data-placeholder="formattedDate" />
+						</div>
+					</section>
+					<section class="date-column">
+						<label for="endDate" class="form-label">End Date</label>
+						<div class="endDateContainer">
+							<input type="date" id="endDate" class="hidden-date-input" data-placeholder="formattedEndDate" />
+						</div>
+					</section>
+				</div>
+
+				<div class="form-group">
+					<label for="budget" class="form-label">Budget</label>
+					<input type="number" class="form-control" id="budget" placeholder="$ 0" />
+				</div>
+
+
+				<div class="form-group">
+					<label class="form-label">Project Status</label>
+					<div class="form-select" data-placeholder="Choose a status" id="status-form-select">
+						<button type="button" class="form-select-trigger" id="status-client-btn">
+							<span id="status-form-select-text" class="form-select-text">Choose a status</span>
+						</button>
+						<ul class="form-select-options" id="status-client-list">
+							<li class="form-select-option" data-value="1">Started</li>
+							<li class="form-select-option" data-value="2">Completed</li>
+						</ul>
+						<input type="hidden" name="form-select-value" id="selected-status" />
+					</div>
+
+				</div>
+
+				<button type="submit" class="btn btn-blue">Save</button>
+			</form>
+		</div>
+
+	</div>
+</section>
+
+
+<script>
+	const editUploadTrigger = document.getElementById('edit-upload-trigger');
+	const editFileInput = document.getElementById('edit-image-upload');
+	const editImagePreview = document.getElementById('edit-image-preview-project');
+	const editImageContainer = document.getElementById('edit-circle');
+	const editImagePreviewIcon = document.getElementById('edit-image-preview-icon');
+	
+
+
+	editUploadTrigger.addEventListener('click', function () {
+		editFileInput.click();
+	});
+	
+
+	editFileInput.addEventListener('change', function (e) {
+		const file = e.target.files[0];
+
+		if (file && file.type.startsWith('image/')) {
+			const reader = new FileReader();
+
+
+			reader.onload = function (e) {
+				editImagePreview.src = e.target.result;
+				editImagePreview.classList.remove('hide');
+				editImagePreviewIcon.classList.remove('fa-camera')
+				editImagePreviewIcon.classList.add('fa-edit');
+				editImageContainer.classList.add('selected');
+			};
+
+			reader.readAsDataURL(file);
+		}
+	});
+
+		window.onload = function () {
+		const today = new Date();
+		const formattedDate = today.toISOString().split('T')[0];
+
+		const endDay = new Date();
+		endDay.setMonth(endDay.getMonth() + 1);
+		const formattedEndDate = endDay.toISOString().split('T')[0];
+
+
+		document.getElementById('startDate').value = formattedDate;
+		document.getElementById('endDate').value = formattedEndDate;
+	};
+
+
+	const editProjectDescriptionTextarea = document.getElementById('edit-project-description')
+	const editProjectDescriptionQuill = new Quill('#edit-project-description-wysiwyg-editor', {
+		modules: {
+			syntax: true,
+			toolbar: '#edit-project-description-wysiwyg-toolbar'
+		},
+		theme: 'snow',
+		placeholder: 'Type something'
+	});
+
+	editProjectDescriptionQuill.on('text-change', function() {
+		editProjectDescriptionTextarea.value = editProjectDescriptionQuill.root.innerHTML
+	})
+
+
+
+
+
+
+		const editClientButton = document.querySelector('#edit-client-btn');
+	const editFormSelect = document.querySelector('#edit-form-select');
+	const editClientList = document.querySelector('#edit-client-list');
+	const editSelectedClientInput = document.querySelector('#selected-client');
+	const editClientText = document.querySelector('#edit-form-select-text');
+
+	
+	editClientButton.addEventListener('click', () => {
+		editFormSelect.classList.toggle('open');
+	});
+
+	
+
+	editClientList.addEventListener('click', (event) => {
+		if (event.target.classList.contains('form-select-option')) {
+			const editClientName = event.target.textContent;
+			const editClientValue = event.target.getAttribute('data-value');
+
+			editClientText.textContent = editClientName;
+			editSelectedClientInput.value = editClientValue;
+
+			
+			editFormSelect.classList.remove('open');
+		}
+	});
+
+
+
+
+
+
+	const statusClientButton = document.querySelector('#status-client-btn');
+	const statusFormSelect = document.querySelector('#status-form-select');
+	const statusClientList = document.querySelector('#status-client-list');
+	const statusSelectedClientInput = document.querySelector('#selected-status');
+	const statusClientText = document.querySelector('#status-form-select-text');
+
+
+	statusClientButton.addEventListener('click', () => {
+		statusFormSelect.classList.toggle('open');
+	});
+
+
+
+	statusClientList.addEventListener('click', (event) => {
+		if (event.target.classList.contains('form-select-option')) {
+			const statusClientName = event.target.textContent;
+			const statusClientValue = event.target.getAttribute('data-value');
+
+			statusClientText.textContent = statusClientName;
+			statusSelectedClientInput.value = statusClientValue;
+
+
+			statusFormSelect.classList.remove('open');
+		}
+	});
+
+
+
+
+
+
+
+
+
+</script>

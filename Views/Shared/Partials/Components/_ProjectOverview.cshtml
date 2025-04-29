@@ -1,14 +1,55 @@
-﻿@{
+﻿
+@{
 	ViewData["Title"] = "Projects";
 }
 
+
+
 <section class="main-overview">
 	<h2>Projects</h2>
-	<button class="btn btn-blue">
+	<button type="button" class="btn btn-blue" data-type="modal" data-target="#add-project-modal" id="add-project-btn">
 		<i class="fa-solid fa-plus"></i>
 		<span>Add</span>
 		<span>Project</span>
 	</button>
 </section>
 
+
+
 @await Html.PartialAsync("Partials/Components/_ProjectStatusLinks")
+@await Html.PartialAsync("Partials/Components/_AddProjectPopUp")
+@await Html.PartialAsync("Partials/Components/_EditProjectPage")
+
+
+
+
+
+
+
+
+
+<script>
+		const addProjectButton = document.querySelector('#add-project-btn');
+	const addProjectModal = document.querySelector('#add-project-modal');
+
+
+		addProjectButton.addEventListener('click', (event) => {
+		addProjectModal.classList.add("modal-show");
+	});
+
+
+		window.addEventListener('click', (event) => {
+		if (event.target === addProjectModal) {
+			addProjectModal.classList.remove('modal-show');
+		}
+	});
+
+
+
+
+
+
+
+
+</script>
+

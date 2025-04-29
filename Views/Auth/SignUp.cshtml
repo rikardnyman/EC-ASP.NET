@@ -3,14 +3,12 @@
 	ViewData["Title"] = "Sign Up";
 }
 
-<div class="center-screen">
 
-	<div class="surface">
 
 		<h1>Create Account</h1>
 
 
-		<form method="post" asp-controller="Auth" action="/auth/signup">
+		<form method="post" asp-controller="Auth" asp-action="/auth/signup">
 
 			<div class="form-group">
 				<label for="firstName">Full Name</label>
@@ -47,7 +45,7 @@
 				<input placeholder="Confirm your password"
 					   type="password"
 					   class="form-control"
-					   id="password"
+					   id="confirm-password"
 					   name="password"
 					   required />
 			</div>
@@ -69,5 +67,3 @@
 			<p>Already have an account? <a href="/auth/signin">Login</a></p>
 		</div>
 
-	</div>
-</div>
