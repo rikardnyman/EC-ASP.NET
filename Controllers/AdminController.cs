@@ -12,27 +12,7 @@ namespace EC_ASP.NET.Controllers
 
 
 
-        [HttpPost]
-        public IActionResult SignUp(ClientEntity client, bool terms)
-        {
-            if (ModelState.IsValid)
-            {
 
-                if (!terms)
-                {
-                    ModelState.AddModelError("Terms", "You must accept the terms and conditions.");
-                    return View();
-                }
-
-
-
-
-                return RedirectToAction("SignUpSuccess");
-            }
-
-
-            return View(client);
-        }
 
 
         public IActionResult SignUpSuccess()

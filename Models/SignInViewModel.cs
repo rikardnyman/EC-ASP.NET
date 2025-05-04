@@ -2,12 +2,8 @@
 
 namespace EC_ASP.NET.Models
 {
-    public class SignUpViewModel
+    public class SignInViewModel
     {
-        [Required(ErrorMessage = "You need to enter your full name.")]
-        [DataType(DataType.Text)]
-        [Display(Name = "Enter your full name")]
-        public string FullName { get; set; } = null!;
 
         [Required(ErrorMessage = "You need to enter an email address.")]
         [EmailAddress(ErrorMessage = "Invalid email address.")]
@@ -20,17 +16,8 @@ namespace EC_ASP.NET.Models
         [Display(Name = "Enter a password")]
         public string Password { get; set; } = null!;
 
-        [Required(ErrorMessage = "You need to confirm your password.")]
-        [DataType(DataType.Password)]
-        [Compare(nameof(Password))]
-        [Display(Name = "Confirm your password")]
-        public string ConfirmPassword { get; set; } = null!;
-
         [Range(typeof(bool), "true", "true")]
         [Display(Name = "Accept Terms and Conditions")]
-        public bool Terms { get; set; }
-
-
-
+        public bool IsPersistent { get; set; }
     }
 }

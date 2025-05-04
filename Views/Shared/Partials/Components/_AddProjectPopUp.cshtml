@@ -8,22 +8,26 @@
 			</button>
 		</div>
 		<div class="card-body">
-			<form asp-controller="" asp-action="" method="post" enctype="multipart/form-data" novalidate>
+			<form asp-controller="Projects" asp-action="AddProject" method="post" enctype="multipart/form-data" novalidate>
 				<div class="form-group">
+					
+					<input name="UserId" class="hide" value="test-user" />
+
 					<div id="upload-trigger" class="image-preview-container">
 						<img id="image-preview-project" src="#" class="hide" />
 						<div class="circle">
 							<i id="image-preview-icon" class="fa-duotone fa-solid fa-camera"></i>
 						</div>
 					</div>
-					<input type="file" id="image-upload" accept="image/*" class="hide" />
+					<input type="file" id="image-upload" name="ImageFile" accept="image/*" class="hide" />
 
 				</div>
 
 
 				<div class="form-group">
 					<label for="projectName" class="form-label">Project Name</label>
-					<input type="text" class="form-control" id="projectName" placeholder="Project Name" />
+					<input type="text" class="form-control" name="ProjectName" id="projectName" placeholder="Project Name" required />
+
 				</div>
 
 				<div class="form-group">
@@ -36,7 +40,8 @@
 							<li class="form-select-option" data-value="1">Client 1</li>
 							<li class="form-select-option" data-value="2">Client 2</li>
 						</ul>
-						<input type="hidden" name="form-select-value" id="selected-client" />
+						<input type="hidden" name="ClientId" id="selected-client" value="1" />
+
 					</div>
 
 				</div>
@@ -44,7 +49,7 @@
 
 				<div class="form-group">
 					<label class="form-label">Description</label>
-					<textarea class="hide" id="add-project-description" rows="4"></textarea>
+					<textarea class="hide" id="add-project-description" name="Description" rows="4"></textarea>
 
 					<div class="quill-container">
 						<div id="add-project-description-wysiwyg-editor" class="wysiwyg-editor"></div>
@@ -79,20 +84,21 @@
 					<section class="date-column">
 						<label for="startDate" class="form-label">Start Date</label>
 						<div class="startDateContainer">
-							<input type="date" id="startDate" class="hidden-date-input" data-placeholder="formattedDate" />
+							<input type="date" id="startDate" name="StartDate" class="hidden-date-input" data-placeholder="formattedDate" />
 						</div>
 					</section>
 					<section class="date-column">
 						<label for="endDate" class="form-label">End Date</label>
 						<div class="endDateContainer">
-							<input type="date" id="endDate" class="hidden-date-input" data-placeholder="formattedEndDate" />
+							<input type="date" id="endDate" name="EndDate" class="hidden-date-input" data-placeholder="formattedEndDate" />
 						</div>
 					</section>
 				</div>
 
 				<div class="form-group">
 					<label for="budget" class="form-label">Budget</label>
-					<input type="number" class="form-control" id="budget" placeholder="$ 0" />
+					<input type="number" name="Budget" class="form-control" id="budget" placeholder="$ 0" value="0" />
+
 				</div>
 
 				<button type="submit" class="btn btn-blue">Create</button>
@@ -174,5 +180,26 @@
 
 
 
+		const clientSelect = document.querySelector('.form-select'); 
+	const clientButton = document.querySelector('#client-btn');
+	const clientList = document.querySelector('#client-list');
+	const selectedClientInput = document.querySelector('#selected-client');
+	const clientText = document.querySelector('.form-select-text');
+
+	clientButton.addEventListener('click', () => {
+		clientSelect.classList.toggle('open'); 
+	});
+
+	clientList.addEventListener('click', (event) => {
+		if (event.target.classList.contains('form-select-option')) {
+			const clientName = event.target.textContent;
+			const clientValue = event.target.getAttribute('data-value');
+
+			clientText.textContent = clientName;
+			selectedClientInput.value = clientValue.toString();
+
+			clientSelect.classList.remove('open');
+		}
+	});
 
 </script>

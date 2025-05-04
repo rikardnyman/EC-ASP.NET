@@ -8,7 +8,7 @@
 			</button>
 		</div>
 		<div class="card-body">
-			<form asp-controller="" asp-action="" method="post" enctype="multipart/form-data" novalidate>
+			<form asp-controller="Projects" asp-action="EditProject" method="post" enctype="multipart/form-data" novalidate>
 				<div class="form-group">
 					<div id="edit-upload-trigger" class="image-preview-container">
 						<img id="edit-image-preview-project" src="#" class="hide" />
@@ -105,7 +105,7 @@
 							<li class="form-select-option" data-value="1">Started</li>
 							<li class="form-select-option" data-value="2">Completed</li>
 						</ul>
-						<input type="hidden" name="form-select-value" id="selected-status" />
+						<input type="hidden" name="StatusId" id="selected-status" />
 					</div>
 
 				</div>

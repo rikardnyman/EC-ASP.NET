@@ -1,52 +1,82 @@
-﻿using EC_ASP.NET.Models;
+﻿using Data.Dtos;
+using Data.Services;
+using EC_ASP.NET.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EC_ASP.NET.Controllers
 {
-    public class AuthController : Controller
+    public class AuthController(IAuthService authService) : Controller
     {
+        private readonly IAuthService _authService = authService;
 
-
-
-        [HttpGet]
         public IActionResult SignUp()
         {
+            
             return View();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> SignUp(SignUpViewModel model)
+        {
+            ViewBag.ErrorMessage = null;
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var signUpFormData = new SignUpFormData
+            {
+                Email = model.Email,
+                Password = model.Password,
+                FullName = model.FullName
+            };
+
+            var result = await _authService.SignUpAsync(signUpFormData);
+          
+            if (result.Succeeded)
+            {
+                return RedirectToAction("SignIn", "Auth");
+
+            }
+            ViewBag.ErrorMessage = result.Error;
+            return View(model);
+        }
+
+
+
+        public IActionResult SignIn(string returnUrl = "~/")
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
+        }
+
 
 
         [HttpPost]
-        public IActionResult SignUp(User user, string confirmPassword, bool terms)
+        public async Task<IActionResult> SignIn(SignInViewModel model, string returnUrl = "~/")
         {
-            if (ModelState.IsValid)
+            ViewBag.ErrorMessage = null;
+            ViewBag.ReturnUrl = returnUrl;
+
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var signInFormData = new SignInFormData
             {
+                Email = model.Email,
+                Password = model.Password,
+                
+            };
 
-                if (user.Password != confirmPassword)
-                {
-                    ModelState.AddModelError("Password", "Password and confirmation do not match.");
-                    return View();
-                }
+            var result = await _authService.SignInAsync(signInFormData);
 
+            if (result.Succeeded)
+            {
+                return LocalRedirect(returnUrl);
 
-
-
-                return RedirectToAction("SignUpSuccess");
             }
-
-            return View();
-        }
-
-
-        public IActionResult SignUpSuccess()
-        {
-            return View();
-
-        }
-
-
-        public IActionResult SignIn()
-        {
-            return View();
+            ViewBag.ErrorMessage = result.Error;
+            return View(model);
         }
     }
 }

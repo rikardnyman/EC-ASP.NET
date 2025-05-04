@@ -1,9 +1,70 @@
-﻿@{
+﻿@using Data.Entities
 
-	ViewData["Title"] = "Projects";
+@model IEnumerable<Data.Dtos.Project>
+
+@{
+    ViewData["Title"] = "Projects";
 }
 
 @await Html.PartialAsync("Partials/Components/_ProjectOverview")
 
+<div id="projects" class="page">
+    <section class="project-list">
 
-<div>Started Projects</div>
+        @if (!Model.Any())
+        {
+            <p>No projects found.</p>
+        }
+        else
+        {
+            foreach (var project in Model)
+            {
+                <div class="card">
+                    <div class="card-header">
+                        <div class="project-menu">
+                            <div class="project-menu-header">
+
+                                <div class="project-image">
+                                    <img src="@(string.IsNullOrEmpty(project.ImagePath) ? "/images/ProjectLogo.svg" : project.ImagePath)" alt="@project.ProjectName" />
+                                </div>
+
+                                <div class="project-info">
+                                    <h6 class="project-display">@project.ProjectName</h6>
+                                    <span class="client-display">Client ID: @project.ClientId</span>
+                                    <span class="status-display">Status: @(project.StatusId == 1 ? "Started" : "Completed")</span>
+                                </div>
+
+                                <button type="button" class="settings-project-button" data-popup="popup-@project.Id"></button>
+                                <div class="edit-pop-up-menu popup-@project.Id">
+                                    <div class="pop-up-menu-links">
+                                        <div class="pop-up-menu-section">
+                                            <button class="dropdown-btn edit-project-btn">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                                <span>Edit</span>
+                                            </button>
+                                        </div>
+                                        <div class="pop-up-menu-section">
+                                            <button class="dropdown-btn delete-project-btn">
+                                                <i class="fa-solid fa-trash"></i>
+                                                <span>Delete</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <p>@project.Description</p>
+                        <p><strong>Budget:</strong> @(project.Budget ?? "N/A")</p>
+                        <p><strong>Start Date:</strong> @project.StartDate.ToShortDateString()</p>
+                        <p><strong>End Date:</strong> @project.EndDate.ToShortDateString()</p>
+                    </div>
+
+                    <div class="card-footer"></div>
+                </div>
+            }
+        }
+    </section>
+</div>
