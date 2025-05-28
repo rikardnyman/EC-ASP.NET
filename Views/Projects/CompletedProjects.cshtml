@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<Data.Entities.ProjectEntity>
+@{
 
 	ViewData["Title"] = "Projects";
 }
@@ -6,4 +7,11 @@
 @await Html.PartialAsync("Partials/Components/_ProjectOverview")
 
 
-<div>Completed Projects</div>
+@if (Model == null || !Model.Any())
+{
+	<h6>No projects found</h6>
+} else
+	@foreach (var project in Model)
+	{
+			
+}

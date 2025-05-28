@@ -2,14 +2,13 @@ using Data.Contexts;
 using Data.Entities;
 using Data.Repositories;
 using Data.Services;
-
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection"),   
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
                          b => b.MigrationsAssembly("EC-ASP.NET")));
 
 builder.Services.AddIdentity<UserEntity, IdentityRole>(x =>
@@ -22,20 +21,16 @@ builder.Services.AddIdentity<UserEntity, IdentityRole>(x =>
     .AddDefaultTokenProviders();
 
 
-builder.Services.AddScoped<IClientRepository, ClientRepository>();
-builder.Services.AddScoped<IClientService, ClientService>();
 
-builder.Services.AddScoped<IStatusRepository, StatusRepository>();
-builder.Services.AddScoped<IStatusService, StatusService>();
+//builder.Services.AddScoped<IUserRepository, UserRepository>();
+//builder.Services.AddScoped<IUserService, UserService>();
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
+//builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 
 
-builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();

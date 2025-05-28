@@ -1,4 +1,8 @@
-﻿<section id="edit-project-modal" class=" modal">
+﻿@using Data.Entities
+
+@model List<Data.Entities.ProjectEntity>
+
+<section id="edit-project-modal" class=" modal">
 	<div class="card">
 
 		<div class="card-header">
@@ -10,20 +14,21 @@
 		<div class="card-body">
 			<form asp-controller="Projects" asp-action="EditProject" method="post" enctype="multipart/form-data" novalidate>
 				<div class="form-group">
+					<input type="hidden" id="edit-project-id" name="Id" />
 					<div id="edit-upload-trigger" class="image-preview-container">
 						<img id="edit-image-preview-project" src="#" class="hide" />
 						<div id="edit-circle" class="circle">
 							<i id="edit-image-preview-icon" class="fa-duotone fa-solid fa-camera"></i>
 						</div>
 					</div>
-					<input type="file" id="edit-image-upload" accept="image/*" class="hide" />
-
+					<input type="file" id="edit-image-upload" name="ImagePath" accept="image/*" class="hide" />
+					<input type="hidden" name="ImagePath" id="imagePath-hidden" /> 
 				</div>
 
 
 				<div class="form-group">
 					<label for="projectName" class="form-label">Project Name</label>
-					<input type="text" class="form-control" id="projectName" placeholder="Project Name" />
+					<input type="text" class="form-control" name="ProjectName" id="projectName" placeholder="Project Name"  />
 				</div>
 
 				<div class="form-group">
@@ -36,7 +41,7 @@
 							<li class="form-select-option" data-value="1">Client 1</li>
 							<li class="form-select-option" data-value="2">Client 2</li>
 						</ul>
-						<input type="hidden" name="form-select-value" id="selected-client" />
+						<input type="hidden" name="ClientId" id="selected-client" />
 					</div>
 
 				</div>
@@ -44,7 +49,7 @@
 
 				<div class="form-group">
 					<label class="form-label">Description</label>
-					<textarea class="hide" id="edit-project-description" rows="4"></textarea>
+					<textarea name="Description" class="hide" id="edit-project-description" rows="4"></textarea>
 					<div class="quill-container">
 						<div id="edit-project-description-wysiwyg-editor" class="wysiwyg-editor"></div>
 						<div id="edit-project-description-wysiwyg-toolbar" class="wysiwyg-toolbar">
@@ -78,20 +83,20 @@
 					<section class="date-column">
 						<label for="startDate" class="form-label">Start Date</label>
 						<div class="startDateContainer">
-							<input type="date" id="startDate" class="hidden-date-input" data-placeholder="formattedDate" />
+							<input type="date" name="StartDate" id="startDate" class="hidden-date-input" />
 						</div>
 					</section>
 					<section class="date-column">
 						<label for="endDate" class="form-label">End Date</label>
 						<div class="endDateContainer">
-							<input type="date" id="endDate" class="hidden-date-input" data-placeholder="formattedEndDate" />
+							<input type="date" name="EndDate" id="endDate" class="hidden-date-input" />
 						</div>
 					</section>
 				</div>
 
 				<div class="form-group">
 					<label for="budget" class="form-label">Budget</label>
-					<input type="number" class="form-control" id="budget" placeholder="$ 0" />
+					<input type="number" name="Budget" class="form-control" id="budget" />
 				</div>
 
 
@@ -110,7 +115,8 @@
 
 				</div>
 
-				<button type="submit" class="btn btn-blue">Save</button>
+				<button type="button" id="save-edit-project-btn" class="btn btn-blue">Save</button>
+
 			</form>
 		</div>
 
@@ -119,6 +125,83 @@
 
 
 <script>
+		document.querySelector("#save-edit-project-btn").addEventListener("click", async () => {
+		const projectId = document.getElementById("edit-project-id").value;
+
+		const formData = new FormData();
+		formData.append("Id", projectId);
+		formData.append("ProjectName", document.getElementById("projectName").value.trim());
+		formData.append("Description", document.getElementById("edit-project-description").value);
+		formData.append("StartDate", document.getElementById("startDate").value);
+		formData.append("EndDate", document.getElementById("endDate").value);
+		formData.append("Budget", document.getElementById("budget").value.trim() || "0");
+		formData.append("ClientId", document.getElementById("selected-client").value);
+		formData.append("StatusId", document.getElementById("selected-status").value);
+
+		
+		const imageInput = document.getElementById("edit-image-upload");
+		if (imageInput.files.length > 0) {
+			formData.append("ImageUpload", imageInput.files[0]);
+		}
+
+		const response = await fetch(`/projects/edit/${projectId}`, {
+			method: "POST",
+			body: formData 
+		});
+
+		const result = await response.json();
+
+		if (result.success) {
+			alert("Project updated successfully");
+			window.location.href = "/projects";
+		} else {
+			alert("Update failed: " + result.message);
+		}
+	});
+
+
+
+
+
+
+		document.querySelectorAll('.edit-project-btn').forEach(btn => {
+		btn.addEventListener('click', () => {
+			const modal = document.getElementById('edit-project-modal');
+
+			document.getElementById('edit-project-id').value = btn.dataset.id;
+			document.getElementById('projectName').value = btn.dataset.name;
+			document.getElementById('selected-client').value = btn.dataset.clientid;
+			document.getElementById('edit-form-select-text').textContent = `Client ${btn.dataset.clientid}`;
+			document.getElementById('selected-status').value = btn.dataset.statusid;
+			document.getElementById('status-form-select-text').textContent = btn.dataset.statusid == "1" ? "Started" : "Completed";
+			document.getElementById('startDate').value = btn.dataset.startdate;
+			document.getElementById('endDate').value = btn.dataset.enddate;
+			document.getElementById('budget').value = btn.dataset.budget;
+			document.getElementById('edit-project-description').value = btn.dataset.description;
+
+		
+			if (window.editProjectDescriptionQuill) {
+				editProjectDescriptionQuill.root.innerHTML = btn.dataset.description;
+			}
+
+			
+			const preview = document.getElementById('edit-image-preview-project');
+			if (btn.dataset.image) {
+				preview.src = btn.dataset.image;
+				preview.classList.remove('hide');
+			}
+
+		
+			modal.classList.add('modal-show');
+			document.getElementById('imagePath-hidden').value = btn.dataset.image;
+
+		});
+	});
+
+
+
+
+
 	const editUploadTrigger = document.getElementById('edit-upload-trigger');
 	const editFileInput = document.getElementById('edit-image-upload');
 	const editImagePreview = document.getElementById('edit-image-preview-project');
@@ -151,7 +234,7 @@
 		}
 	});
 
-		window.onload = function () {
+			if (!document.getElementById('edit-project-id').value) {
 		const today = new Date();
 		const formattedDate = today.toISOString().split('T')[0];
 
@@ -159,10 +242,9 @@
 		endDay.setMonth(endDay.getMonth() + 1);
 		const formattedEndDate = endDay.toISOString().split('T')[0];
 
-
 		document.getElementById('startDate').value = formattedDate;
 		document.getElementById('endDate').value = formattedEndDate;
-	};
+	}
 
 
 	const editProjectDescriptionTextarea = document.getElementById('edit-project-description')

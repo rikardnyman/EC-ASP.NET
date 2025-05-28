@@ -1,83 +1,83 @@
-﻿using Data.Dtos;
-using Data.Services;
-using EC_ASP.NET.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿//using Data.Dtos;
+//using Data.Services;
+//using EC_ASP.NET.Models;
+//using Microsoft.AspNetCore.Mvc;
 
-namespace EC_ASP.NET.Controllers
-{
-    public class AuthController(IAuthService authService) : Controller
-    {
-        private readonly IAuthService _authService = authService;
+//namespace EC_ASP.NET.Controllers
+//{
+//    public class AuthController(IAuthService authService) : Controller
+//    {
+//        private readonly IAuthService _authService = authService;
 
-        public IActionResult SignUp()
-        {
-            
-            return View();
-        }
+//        public IActionResult SignUp()
+//        {
 
-        [HttpPost]
-        public async Task<IActionResult> SignUp(SignUpViewModel model)
-        {
-            ViewBag.ErrorMessage = null;
+//            return View();
+//        }
 
-            if (!ModelState.IsValid)
-                return View(model);
+//        [HttpPost]
+//        public async Task<IActionResult> SignUp(SignUpViewModel model)
+//        {
+//            ViewBag.ErrorMessage = null;
 
-            var signUpFormData = new SignUpFormData
-            {
-                Email = model.Email,
-                Password = model.Password,
-                FullName = model.FullName
-            };
+//            if (!ModelState.IsValid)
+//                return View(model);
 
-            var result = await _authService.SignUpAsync(signUpFormData);
-          
-            if (result.Succeeded)
-            {
-                return RedirectToAction("SignIn", "Auth");
+//            var signUpFormData = new SignUpFormData
+//            {
+//                Email = model.Email,
+//                Password = model.Password,
+//                FullName = model.FullName
+//            };
 
-            }
-            ViewBag.ErrorMessage = result.Error;
-            return View(model);
-        }
+//            var result = await _authService.SignUpAsync(signUpFormData);
 
+//            if (result.Succeeded)
+//            {
+//                return RedirectToAction("SignIn", "Auth");
 
-
-        public IActionResult SignIn(string returnUrl = "~/")
-        {
-            ViewBag.ReturnUrl = returnUrl;
-            return View();
-        }
+//            }
+//            ViewBag.ErrorMessage = result.Error;
+//            return View(model);
+//        }
 
 
 
-        [HttpPost]
-        public async Task<IActionResult> SignIn(SignInViewModel model, string returnUrl = "~/")
-        {
-            ViewBag.ErrorMessage = null;
-            ViewBag.ReturnUrl = returnUrl;
+//        public IActionResult SignIn(string returnUrl = "~/")
+//        {
+//            ViewBag.ReturnUrl = returnUrl;
+//            return View();
+//        }
 
 
-            if (!ModelState.IsValid)
-                return View(model);
 
-            var signInFormData = new SignInFormData
-            {
-                Email = model.Email,
-                Password = model.Password,
-                
-            };
+//        [HttpPost]
+//        public async Task<IActionResult> SignIn(SignInViewModel model, string returnUrl = "~/")
+//        {
+//            ViewBag.ErrorMessage = null;
+//            ViewBag.ReturnUrl = returnUrl;
 
-            var result = await _authService.SignInAsync(signInFormData);
 
-            if (result.Succeeded)
-            {
-                return LocalRedirect(returnUrl);
+//            if (!ModelState.IsValid)
+//                return View(model);
 
-            }
-            ViewBag.ErrorMessage = result.Error;
-            return View(model);
-        }
-    }
-}
+//            var signInFormData = new SignInFormData
+//            {
+//                Email = model.Email,
+//                Password = model.Password,
+
+//            };
+
+//            var result = await _authService.SignInAsync(signInFormData);
+
+//            if (result.Succeeded)
+//            {
+//                return LocalRedirect(returnUrl);
+
+//            }
+//            ViewBag.ErrorMessage = result.Error;
+//            return View(model);
+//        }
+//    }
+//}
 

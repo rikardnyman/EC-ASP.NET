@@ -1,8 +1,6 @@
-﻿using System.Security.Principal;
-using Data.Dtos;
+﻿using Data.Contexts;
 using Data.Entities;
 using Data.Services;
-using EC_ASP.NET.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EC_ASP.NET.Controllers
@@ -12,23 +10,34 @@ namespace EC_ASP.NET.Controllers
     {
         private readonly IProjectService _projectService;
 
-        public ProjectsController(IProjectService projectService)
+
+
+        private readonly AppDbContext _context;
+
+        public ProjectsController(IProjectService projectService, AppDbContext context)
         {
             _projectService = projectService;
+            _context = context;
         }
+
 
         [HttpGet("")]
         public async Task<IActionResult> ProjectPage()
         {
             try
             {
-                var entities = await _projectService.GetAllProjects();
-                var projects = entities.Select(Project.FromEntity).ToList();
+                var projects = await _projectService.GetAllProjects();
+
+                if (projects == null)
+                {
+                    return View();
+                }
+
                 return View(projects);
             }
             catch (Exception ex)
             {
-                return View("Error", ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -37,13 +46,18 @@ namespace EC_ASP.NET.Controllers
         {
             try
             {
-                var entities = await _projectService.GetAllProjects();
-                var projects = entities.Select(Project.FromEntity).ToList();
+                var projects = await _projectService.GetAllProjects();
+
+                if (projects == null || !projects.Any())
+                {
+                    return View();
+                }
+
                 return View(projects);
             }
             catch (Exception ex)
             {
-                return View("Error", ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -52,10 +66,8 @@ namespace EC_ASP.NET.Controllers
         {
             try
             {
-                var entities = await _projectService.GetAllProjects();
-                var projects = entities
+                var projects = (await _projectService.GetAllProjects())
                     .Where(p => p.StatusId == 1)
-                    .Select(Project.FromEntity)
                     .ToList();
 
                 return View(projects);
@@ -71,10 +83,8 @@ namespace EC_ASP.NET.Controllers
         {
             try
             {
-                var entities = await _projectService.GetAllProjects();
-                var projects = entities
+                var projects = (await _projectService.GetAllProjects())
                     .Where(p => p.StatusId == 2)
-                    .Select(Project.FromEntity)
                     .ToList();
 
                 return View(projects);
@@ -85,46 +95,52 @@ namespace EC_ASP.NET.Controllers
             }
         }
 
-        [HttpPost("add")]
-        public async Task<IActionResult> AddProject(Project newProject)
-        {
 
+        [HttpPost("add")]
+        public async Task<IActionResult> AddProject(ProjectEntity newProject, IFormFile ImagePath)
+        {
             if (!ModelState.IsValid)
-                return View("Error");
+                return View("Error", "Invalid project data");
 
             if (string.IsNullOrEmpty(newProject.Id))
                 newProject.Id = Guid.NewGuid().ToString();
 
-            if (string.IsNullOrEmpty(newProject.UserId))
-                newProject.UserId = "test-user";
+            if (newProject.ClientId == 0) newProject.ClientId = 1;
+
+            if (newProject.StatusId == 0) newProject.StatusId = 1;
 
 
-            if (newProject.ImageFile != null && newProject.ImageFile.Length > 0)
+            if (ImagePath != null && ImagePath.Length > 0)
             {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                Directory.CreateDirectory(uploadsFolder);
-
-                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(newProject.ImageFile.FileName);
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                if (!ImagePath.ContentType.StartsWith("image/"))
                 {
-                    await newProject.ImageFile.CopyToAsync(fileStream);
+                    return View("Error", "Only image files are allowed.");
                 }
 
-                newProject.ImagePath = "/uploads/" + uniqueFileName;
+                try
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(ImagePath.FileName);
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await ImagePath.CopyToAsync(fileStream);
+                    }
+
+                    newProject.ImagePath = "/uploads/" + uniqueFileName;
+                }
+                catch (Exception ex)
+                {
+                    return View("Error", $"Image upload failed: {ex.Message}");
+                }
             }
-
-           
-           
-
-            
-            var entity = newProject.ToEntity();
 
             try
             {
-                await _projectService.CreateProject(entity);
-                TempData["Success"] = "Project created successfully!";
+                await _projectService.CreateProject(newProject);
                 return RedirectToAction("ProjectPage");
             }
             catch (Exception ex)
@@ -135,23 +151,64 @@ namespace EC_ASP.NET.Controllers
 
 
 
-        [HttpPost("edit")]
-        public async Task<IActionResult> EditProject(Project updatedProject)
+
+
+        [HttpPost("edit/{id}")]
+        public async Task<IActionResult> EditProject(string id, [FromForm] ProjectEntity updatedProject, IFormFile? ImageUpload)
         {
-            if (!ModelState.IsValid)
-                return RedirectToAction("AllProjects");
-
-            var entity = updatedProject.ToEntity();
-
-            try
+            if (id != updatedProject.Id)
             {
-                await _projectService.UpdateProject(int.Parse(entity.Id), entity);
-                return RedirectToAction("AllProjects");
+                return BadRequest(new { success = false, message = "ID mismatch" });
             }
-            catch (Exception ex)
+
+            var project = await _context.Projects.FindAsync(id);
+            if (project == null)
             {
-                return View("Error", ex.Message);
+                return NotFound(new { success = false, message = "Project not found" });
             }
+
+            project.ProjectName = updatedProject.ProjectName;
+            project.Description = updatedProject.Description;
+            project.StartDate = updatedProject.StartDate;
+            project.EndDate = updatedProject.EndDate;
+            project.Budget = updatedProject.Budget;
+            project.ClientId = updatedProject.ClientId;
+            project.StatusId = updatedProject.StatusId;
+
+            if (ImageUpload != null && ImageUpload.Length > 0)
+            {
+
+                var imageFileName = Path.GetFileName(ImageUpload.FileName);
+                var imagePath = Path.Combine("wwwroot/uploads", imageFileName);
+
+                using var stream = new FileStream(imagePath, FileMode.Create);
+                await ImageUpload.CopyToAsync(stream);
+
+                project.ImagePath = "/uploads/" + imageFileName;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true, message = "Project updated" });
         }
+
+
+
+
+
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProject(string id)
+        {
+            var project = await _projectService.GetProjectById(id);
+            if (project == null)
+                return NotFound();
+
+            await _projectService.DeleteProject(id);
+
+            return NoContent();
+        }
+
     }
 }
